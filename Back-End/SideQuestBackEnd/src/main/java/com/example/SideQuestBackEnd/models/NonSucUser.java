@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class SuccessfulUser {
+public class NonSucUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -20,4 +20,12 @@ public class SuccessfulUser {
     @Column(name = "time_in_seconds")
     public int timeInSeconds;
 
+    public NonSucUser(Long userId, int timeInSeconds) {
+        this.userId = userId;
+        this.timeInSeconds = timeInSeconds;
+    }
+
+    public NonSucUser() {
+
+    }
 }
