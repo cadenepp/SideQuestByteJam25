@@ -1,5 +1,56 @@
-### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=IntelliJ IDEA
 
-###
+### POST request for User
+POST localhost:8080/api/User
+Content-Type: application/json
+
+{
+    "name": "Cody",
+    "overallCulture": "Mexican",
+    "hat": "American",
+    "shirt": "Japanese",
+    "pants": "German",
+    "shoes": "Mexican"
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### GET request for finding User by Id
+GET localhost:8080/api/User/1
+Content-Type: application/json
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### POST request for Successful User
+POST localhost:8080/api/SuccessfulUser
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "timeInSeconds": 120
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### GET request for finding all Successfull Users
+GET localhost:8080/api/SuccessfulUser
+Content-Type: application/json
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
