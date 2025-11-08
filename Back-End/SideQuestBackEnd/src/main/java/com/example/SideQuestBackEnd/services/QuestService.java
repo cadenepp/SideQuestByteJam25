@@ -14,11 +14,12 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 
 @Service
 public class QuestService {
 
-    @Value("$(api.key)")
+    @Value("${api.key}")
     String apiKey;
 
     private final SessionService sessionService;
@@ -36,7 +37,7 @@ public class QuestService {
     String overallCulture;
 
 
-    // TODO: fill in value for each clothing item with actual tied behind value
+    // fill in value for each clothing item with actual tied behind value
     // where we pull user Entity data
     public void pullUserInfo(String sessionId, User user) {
         user_id = user.getId();
@@ -56,13 +57,13 @@ public class QuestService {
 
 
         String tempShirt = user.getShirt();
-        if (tempShirt.equals("Japanese shirt")) {
+        if (tempShirt.equals("JapaneseShirt")) {
             shirt = "This might be the heaviest shirt than any Japanese person has worn. Because it's armor";
-        } else if (tempShirt.equals("American shirt")) {
+        } else if (tempShirt.equals("AmericanShirt")) {
             shirt = "America has culture in all the small places, especially in a blue color job like this";
-        } else if (tempShirt.equals("German shirt")) {
+        } else if (tempShirt.equals("GermanShirt")) {
             shirt = "No one can wear suspenders like you or the great drunks of the East in Europe";
-        } else if (tempShirt.equals("Mexican shirt")) {
+        } else if (tempShirt.equals("MexicanShirt")) {
             shirt = "One of the most snazziest shirts you can ever wear especially in the occasion of music";
         }
 
@@ -94,6 +95,8 @@ public class QuestService {
 
         overallCulture = user.getOverallCulture();
 
+        System.out.println(user_id);
+
         try {
             generateQuest(sessionId);
         } catch (Exception e) {
@@ -105,18 +108,21 @@ public class QuestService {
     private void generateQuest(String sessionId) throws IOException, InterruptedException {
 
         // call AI
-        // Fireworks endpoint
+        // fireworks endpoint
         URI uri = URI.create("https://api.fireworks.ai/inference/v1/chat/completions");
         HttpClient client = HttpClient.newHttpClient();
 
         // fill in prompt for AI
-        // Build your long prompt
         String prompt = """
             You are a clever, imaginative, and funny storywriter for a randomized storytelling game called "Random SideQuest."
    
                     Your task is to generate a JSON object with this exact structure:
         
-                    {
+                      {
+                      "userInfo": {
+                        "userId": {user_id},
+                        "userName": {userName}
+                      },
                       "monologue": {
                         "text": "A short narrative introduction (4–6 sentences) explaining the situation or world the player is in. Include context about their character, outfit, and culture in a fun and immersive way."
                       },
@@ -182,7 +188,7 @@ public class QuestService {
         
                     **Story Requirements:**
                     - Each story must be completely random and original each time.
-                    - The “monologue” must tie the adventure to the player’s appearance and background using these variables:""" +  user_id + ", " + name + ", " + hat + ", " + shirt + ", " + pants + ", " + shoes + ", " +  overallCulture + "is my over all culture theme." + """
+                    - The “monologue” must tie the adventure to the player’s appearance and background using these variables:""" + "user_id=" +   user_id + ", " + name + ", " + hat + ", " + shirt + ", " + pants + ", " + shoes + ", " +  overallCulture + "is my over all culture theme." + """
 
                     - Weave these attributes naturally into the storytelling (e.g., “With your bright red hat and desert nomad garb, you stand out among the jungle ruins…”).
                     - The story should feel like a whimsical RPG side quest: short, entertaining, and with a sense of humor.
@@ -193,7 +199,7 @@ public class QuestService {
        
             """;
 
-        // Properly escape quotes and newlines in the prompt
+        // properly escape quotes and newlines in the prompt
         String escapedPrompt = prompt.replace("\"", "\\\"").replace("\n", "\\n");
 
         // JSON payload with your deployed model
@@ -215,7 +221,7 @@ public class QuestService {
         }
         """.formatted(escapedPrompt);
 
-        // Build HTTP request
+        // build HTTP request
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header("Accept", "application/json")
@@ -224,10 +230,10 @@ public class QuestService {
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
-        // Send request
+        // send request
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // Print result
+        // sout result
         System.out.println("Response code: " + response.statusCode());
 
         if (response.statusCode() != 200) {
@@ -235,22 +241,21 @@ public class QuestService {
             return;
         }
 
-        // Parse Fireworks response
+        // parse Fireworks response
         JSONObject responseJson = new JSONObject(response.body());
         JSONArray choices = responseJson.getJSONArray("choices");
         JSONObject message = choices.getJSONObject(0).getJSONObject("message");
         String content = message.getString("content").trim();
 
-        // Try to extract valid JSON from the string
+        // try to extract valid JSON from the string
+        JSONObject storyJson = new JSONObject();
         int start = content.indexOf("{");
         int end = content.lastIndexOf("}");
         if (start >= 0 && end > start) {
             String jsonPart = content.substring(start, end + 1);
 
             try {
-                JSONObject storyJson = new JSONObject(jsonPart);
-                System.out.println("\n=== Parsed Story JSON ===");
-                System.out.println(storyJson.toString(2));
+                storyJson = new JSONObject(jsonPart);
             } catch (Exception e) {
                 System.out.println("Failed to parse JSON. Raw content:");
                 System.out.println(content);
@@ -261,50 +266,106 @@ public class QuestService {
             System.out.println(content);
         }
 
+        // parse into Quest Object
+        // receive JSON from AI and parse into 'Quest' object
+        // parse for each object in JSON array, create 'Slide' object
+        // add 'Slide' object(s) to Quest.Slides ArrayList<Slide>
+        try {
+            // create a new Quest object
+            Quest quest = new Quest();
+            quest.setSlides(new ArrayList<>());
 
+            // parse user info
+            JSONObject userInfo = storyJson.optJSONObject("userInfo");
+            if (userInfo != null) {
+                quest.setUser_id(userInfo.optLong("userId"));
+                quest.setUser_name(userInfo.optString("userName"));
+            }
 
-        Quest quest = new Quest();
-        // TODO: receive JSON from AI and parse into 'Quest' object
-        // TODO: parse for each object in JSON array, create 'Slide' object
-        // TODO: add 'Slide' object(s) to Quest.Slides ArrayList<Slide>
+            // parse monologue
+            JSONObject monologueObj = storyJson.optJSONObject("monologue");
+            if (monologueObj != null) {
+                quest.setMonologue(monologueObj.optString("text"));
+            }
 
+            // parse slides
+            JSONArray slidesArray = storyJson.optJSONArray("slides");
+            if (slidesArray != null) {
+                for (int i = 0; i < slidesArray.length(); i++) {
+                    JSONObject slideObj = slidesArray.getJSONObject(i);
+                    Slide slide = new Slide();
 
-        // add to session service
-        sessionService.startSession(sessionId, quest);
+                    // main text
+                    slide.setText(slideObj.optString("text"));
+
+                    // decisions array (2 per slide)
+                    JSONArray decisions = slideObj.optJSONArray("decisions");
+                    if (decisions != null && decisions.length() >= 2) {
+                        JSONObject choice1 = decisions.getJSONObject(0);
+                        JSONObject choice2 = decisions.getJSONObject(1);
+
+                        slide.setChoiceOne(choice1.optString("text"));
+                        slide.setAnswerOne(choice1.optInt("answer"));
+
+                        slide.setChoiceTwo(choice2.optString("text"));
+                        slide.setAnswerTwo(choice2.optInt("answer"));
+                    }
+
+                    quest.addSlide(slide);
+                }
+            }
+
+            // store the Quest Object in the session
+            sessionService.startSession(sessionId, quest);
+
+            // sout parsed Quest Object
+            //System.out.println("\n----------- Quest Object -----------");
+            //System.out.println("User: " + quest.getUser_name());
+            //System.out.println("Monologue: " + quest.getMonologue());
+            //System.out.println("Slides count: " + quest.getSlides().size());
+            //System.out.println("\n---------------- End ----------------");
+
+        } catch (Exception e) {
+            System.out.println("Error parsing story JSON into Quest object:");
+            e.printStackTrace();
+        }
 
     }
 
 
-    // TODO: business logic for getting back  **calling sessionService**\
+    // business logic for getting back  **calling sessionService**\
 
-    // TODO: monologue
-    public String getMonologue(String sessionId) {
+    // monologue
+    public ArrayList<String> getMonologue(String sessionId) {
+        ArrayList<String> data = new ArrayList<>();
         Quest quest = sessionService.getSession(sessionId);
-        return "";
+        data.add(quest.getMonologue());
+        data.add(quest.getUser_id().toString());
+        return data;
     }
 
-    // TODO: slide 1
+    // slide 1
     public Slide getSlideOne(String sessionId) {
         Quest quest = sessionService.getSession(sessionId);
-        return null;
+        return quest.getSlides().get(0);
     }
 
-    // TODO: slide 2
+    // slide 2
     public Slide getSlideTwo(String sessionId) {
         Quest quest = sessionService.getSession(sessionId);
-        return null;
+        return quest.getSlides().get(1);
     }
 
-    // TODO: slide 3
+    // slide 3
     public Slide getSlideThree(String sessionId) {
         Quest quest = sessionService.getSession(sessionId);
-        return null;
+        return quest.getSlides().get(2);
     }
 
-    // TODO: slide 4
+    // slide 4
     public Slide getSlideFour(String sessionId) {
         Quest quest = sessionService.getSession(sessionId);
-        return null;
+        return quest.getSlides().get(3);
     }
 
 

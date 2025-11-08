@@ -8,6 +8,7 @@ import java.util.List;
 public class Quest {
 
     private Long user_id;
+    private String user_name;
     private String monologue;
     private List<Slide> slides;
 
