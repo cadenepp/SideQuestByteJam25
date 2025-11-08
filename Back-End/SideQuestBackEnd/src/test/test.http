@@ -1,15 +1,16 @@
 
+
 ### POST request for User
 POST localhost:8080/api/User
 Content-Type: application/json
 
 {
-    "name": "Cody",
+    "name": "Killey",
     "overallCulture": "Mexican",
-    "hat": "American",
-    "shirt": "Japanese",
-    "pants": "German",
-    "shoes": "Mexican"
+    "hat": "AmericanHat",
+    "shirt": "JapaneseShirt",
+    "pants": "GermanPants",
+    "shoes": "MexicanShoes"
 }
 
 > {%
@@ -17,6 +18,7 @@ Content-Type: application/json
         client.assert(response.status === 200, "Response status is not 200");
     });
 %}
+
 
 ### GET request for finding User by Id
 GET localhost:8080/api/User/1
@@ -54,3 +56,59 @@ Content-Type: application/json
         client.assert(response.status === 200, "Response status is not 200");
     });
 %}
+
+
+### GET request for getting monologue
+GET localhost:8080/api/quest/monologue/8120a9c7-c701-426a-9397-3e721bebe0e1
+Content-Type: application/json
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### GET request for getting slide 1
+GET localhost:8080/api/quest/slide1/8120a9c7-c701-426a-9397-3e721bebe0e1
+Content-Type: application/json
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### GET request for getting slide 2
+GET localhost:8080/api/quest/slide2/8120a9c7-c701-426a-9397-3e721bebe0e1
+Content-Type: application/json
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### GET request for getting slide 3
+GET localhost:8080/api/quest/slide3/8120a9c7-c701-426a-9397-3e721bebe0e1
+Content-Type: application/json
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### GET request for getting slide 4
+GET localhost:8080/api/quest/slide4/8120a9c7-c701-426a-9397-3e721bebe0e1
+Content-Type: application/json
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+

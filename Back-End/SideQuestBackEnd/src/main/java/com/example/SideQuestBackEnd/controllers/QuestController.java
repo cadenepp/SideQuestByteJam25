@@ -8,6 +8,8 @@ import com.example.SideQuestBackEnd.services.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+
 @CrossOrigin
 @RestController
 public class QuestController {
@@ -25,7 +27,7 @@ public class QuestController {
 
     // GET - /api/quest/monologue/{sessionId}
     @GetMapping("/api/quest/monologue/{sessionId}")
-    public String getMonologue(@PathVariable String sessionId) {
+    public ArrayList<String> getMonologue(@PathVariable String sessionId) {
         return questService.getMonologue(sessionId);
     }
 

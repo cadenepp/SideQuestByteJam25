@@ -22,14 +22,15 @@ public class UserController {
 
     @PostMapping("/api/User")
     public ResponseEntity<String> createUser(@RequestBody User user) {
-        String sessionId = UUID.randomUUID().toString();
-        questService.pullUserInfo(sessionId, user);
         userServiceImpl.createUser(user);
+        String sessionId = UUID.randomUUID().toString();
+        System.out.println(sessionId);
+        questService.pullUserInfo(sessionId, user);
         return ResponseEntity.ok(sessionId);
     }
 
 
-    @GetMapping("api/User/{id}")
+    @GetMapping("/api/User/{id}")
     public User findUserById(@PathVariable("id") Long id) {
         return userServiceImpl.findUserById(id);
     }
