@@ -6,50 +6,43 @@ import { useRouter } from "next/navigation";
 type Option = { label: string; sprite: string };
 
 const Background: Option[] = [
-    { label: "America", sprite: "/sprites/backgrounds/AmericanBackground.png" },
-    { label: "Japan", sprite: "/sprites/backgrounds/JapanBackground.png" },
-    { label: "Mexico", sprite: "/sprites/backgrounds/MexicoBackground.png" },
-    { label: "Germany", sprite: "/sprites/backgrounds/OktoberfestBackground.png" },
-];
-
-const Base: Option[] = [
-    { label: "None", sprite: "/sprites/BaseCharacter/Yellow_Man.png" },
-    { label: "American", sprite: "/sprites/American/American_Full.png" },
-    { label: "German", sprite: "/sprites/German/German_Full.png" },
-    { label: "Mariachi", sprite: "/sprites/Mariachi/Mariachi_Full.png" },
-    { label: "Samurai", sprite: "/sprites/Samurai/Samurai_Full.png" },
+    { label: "None", sprite: "" },
+    { label: "America", sprite: "/background/AmericanBackground.png" },
+    { label: "Japan", sprite: "/background/JapaneseBackground.png" },
+    { label: "Mexican", sprite: "/background/MexicanBackground.png" },
+    { label: "Germany", sprite: "/background/GermanBackground.png" },
 ];
 
 const Hats: Option[] = [
     { label: "None", sprite: "" },
     { label: "German Hat", sprite: "/sprites/German/german-hat.png" },
     { label: "Mariachi Hat", sprite: "/sprites/Mariachi/Mariachi_Hat.png" },
-    { label: "Samurai Helmet", sprite: "/sprites/Samurai/Samurai_helmet.png" },
-    { label: "American Mustache", sprite: "/sprites/American/Shane_Gillis.png" }
+    { label: "Samurai Hat", sprite: "/sprites/Samurai/Samurai_helmet.png" },
+    { label: "American Hat", sprite: "/sprites/American/Shane_Gillis.png" }
 ];
 
 const Shirts: Option[] = [
     { label: "None", sprite: "" },
     { label: "German Shirt", sprite: "/sprites/German/german-shirt.png" },
     { label: "Mariachi Shirt", sprite: "/sprites/Mariachi/Mariachi_Shirt.png" },
-    { label: "Samurai Armor", sprite: "/sprites/Samurai/Samurai_Armor.png" },
+    { label: "Samurai Shirt", sprite: "/sprites/Samurai/Samurai_Armor.png" },
     { label: "American Shirt", sprite: "/sprites/American/Valley_Forge.png" },
 ];
 
 const Pants: Option[] = [
     { label: "None", sprite: "" },
     { label: "German Pants", sprite: "/sprites/German/german-pants.png" },
-    { label: "American Jeans", sprite: "/sprites/American/Jeans.png" },
+    { label: "American Pants", sprite: "/sprites/American/Jeans.png" },
     { label: "Mariachi Pants", sprite: "/sprites/Mariachi/Mariachi_Pants.png" },
-    { label: "Samurai Waist", sprite: "/sprites/Samurai/Samurai_Waist.png" },
+    { label: "Samurai Pants", sprite: "/sprites/Samurai/Samurai_Waist.png" },
 ];
 
 const Shoes: Option[] = [
     { label: "None", sprite: "" },
     { label: "German Shoes", sprite: "/sprites/German/german-shoes.png" },
-    { label: "American Boots", sprite: "/sprites/American/Boots.png" },
-    { label: "Mariachi Boots", sprite: "/sprites/Mariachi/Mariachi_Boots.png" },
-    { label: "Samurai Boots", sprite: "/sprites/Samurai/Samurai_Boots.png" },
+    { label: "American Shoes", sprite: "/sprites/American/Boots.png" },
+    { label: "Mariachi Shoes", sprite: "/sprites/Mariachi/Mariachi_Boots.png" },
+    { label: "Samurai Shoes", sprite: "/sprites/Samurai/Samurai_Boots.png" },
 ];
 
 function Chevron({direction, onClick}: {
@@ -85,7 +78,6 @@ export default function CharacterCreatorPage() {
     const [pantsId, setPantsId] = useState(0);
     const [shoesId, setShoesId] = useState(0);
     const [backgroundId, setBackgroundId] = useState(0);
-    const [baseId, setBaseId] = useState(0);
 
     function getSelections() {
         return {
@@ -94,7 +86,6 @@ export default function CharacterCreatorPage() {
             pants: Pants[pantsId],
             shoes: Shoes[shoesId],
             background: Background[backgroundId],
-            base: Base[baseId],
         };
     }
 
@@ -108,18 +99,54 @@ export default function CharacterCreatorPage() {
         return next;
     }
 
-    const handleStartJourney = () => {
-        const params = new URLSearchParams({
+    function isValidCharacter() {
+        const hasName = name.trim().length > 0;
+
+        const hasHat = Hats[hatId].label !== "None";
+        const hasShirt = Shirts[shirtId].label !== "None";
+        const hasPants = Pants[pantsId].label !== "None";
+        const hasShoes = Shoes[shoesId].label !== "None";
+        const hasBackground = Background[backgroundId].label !== "None";
+
+        return hasName && hasHat && hasShirt && hasPants && hasShoes && hasBackground;
+    }
+
+
+    const handleStartJourney = async () => {
+        if (!isValidCharacter()) {
+            alert("Please enter a name and select all clothing and a background before starting your journey.");
+            return;
+        }
+
+        const userPayload = {
             name,
-            bg: String(backgroundId),
-            base: String(baseId),
-            hat: String(hatId),
-            shirt: String(shirtId),
-            pants: String(pantsId),
-            shoes: String(shoesId),
-        });
-        router.push(`/monologue?${params.toString()}`);
+            overallCulture: Background[backgroundId].label,
+            hat: Hats[hatId].label.replace(/\s+/g, ""),
+            shirt: Shirts[shirtId].label.replace(/\s+/g, ""),
+            pants: Pants[pantsId].label.replace(/\s+/g, ""),
+            shoes: Shoes[shoesId].label.replace(/\s+/g, "")
+        };
+
+        try {
+            const response = await fetch("http://localhost:8080/api/User", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userPayload),
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            const sessionId = await response.text();
+            console.log("Session ID:", sessionId);
+
+            router.push(`/monologue?sessionId=${encodeURIComponent(sessionId)}`);
+        } catch (error) {
+            console.error("Error creating user:", error);
+            alert("Failed to start journey. Check backend connection.");
+        }
     };
+
+
 
     return (
         //TODO display the background image
@@ -137,30 +164,60 @@ export default function CharacterCreatorPage() {
                     <div className="grid gap-6 md:grid-cols-2">
 
                         {/* left side character display */}
-                        <div className="flex items-center justify-center">
-                            <div
-                                className="relative aspect-square w-full rounded-xl bg-gray-200 shadow-lg">
-                                {selections.base.sprite && (
-                                    <img src={selections.base.sprite} alt={selections.base.label}
-                                         className="absolute h-full w-full object-contain"/>
-                                )}
-                                {selections.pants.sprite && (
-                                    <img src={selections.pants.sprite} alt={selections.pants.label}
-                                         className="absolute h-full w-full object-contain"/>
-                                )}
-                                {selections.shirt.sprite && (
-                                    <img src={selections.shirt.sprite} alt={selections.shirt.label}
-                                         className="absolute h-full w-full object-contain"/>
-                                )}
-                                {selections.shoes.sprite && (
-                                    <img src={selections.shoes.sprite} alt={selections.shoes.label}
-                                         className="absolute h-full w-full object-contain"/>
-                                )}
-                                {selections.hat.sprite && (
-                                    <img src={selections.hat.sprite} alt={selections.hat.label}
-                                         className="absolute h-full w-full object-contain"/>
-                                )}
-                            </div>
+                        <div className="flex items-center justify-center bg-[]">
+
+
+                            <div className="relative aspect-square w-full rounded-xl overflow-hidden shadow-lg border border-black">
+    {/* Background image */}
+    {selections.background.sprite ? (
+        <img
+            src={selections.background.sprite}
+            alt={selections.background.label}
+            className="absolute h-full w-full object-cover z-0"
+        />
+    ) : (
+        <div className="absolute h-full w-full bg-gray-200 z-0" />
+    )}
+
+    {/* Character layers */}
+    <img
+        src="/sprites/BaseCharacter/Yellow_Man.png"
+        alt="base model"
+        className="absolute h-full w-full object-contain z-10"
+    />
+
+    {selections.pants.sprite && (
+        <img
+            src={selections.pants.sprite}
+            alt={selections.pants.label}
+            className="absolute h-full w-full object-contain z-20"
+        />
+    )}
+    {selections.shirt.sprite && (
+        <img
+            src={selections.shirt.sprite}
+            alt={selections.shirt.label}
+            className="absolute h-full w-full object-contain z-30"
+        />
+    )}
+    {selections.shoes.sprite && (
+        <img
+            src={selections.shoes.sprite}
+            alt={selections.shoes.label}
+            className="absolute h-full w-full object-contain z-40"
+        />
+    )}
+    {selections.hat.sprite && (
+        <img
+            src={selections.hat.sprite}
+            alt={selections.hat.label}
+            className="absolute h-full w-full object-contain z-50"
+        />
+    )}
+</div>
+
+
+
                         </div>
 
                         {/* right side creation div */}
@@ -174,19 +231,6 @@ export default function CharacterCreatorPage() {
                                         placeholder="Enter your name"
                                         className="max-w rounded-md bg-gray-100 px-3 py-2 shadow-md"
                                     />
-                                </Row>
-
-                                <Row label="Base:">
-                                    <div className="flex items-center gap-2">
-                                        <Chevron direction="left"
-                                                 onClick={() => setBaseId((i) => cycle(Base.length, i, -1))}/>
-                                        <div
-                                            className="flex-1 w-40 rounded-md bg-gray-100 px-3 py-1 text-sm text-gray-700 shadow-md">
-                                            {Base[baseId].label} ({baseId + 1}/{Base.length})
-                                        </div>
-                                        <Chevron direction="right"
-                                                 onClick={() => setBaseId((i) => cycle(Base.length, i, +1 as 1))}/>
-                                    </div>
                                 </Row>
 
                                 <Row label="Hat:">
@@ -241,7 +285,7 @@ export default function CharacterCreatorPage() {
                                     </div>
                                 </Row>
 
-                                <Row label="Background:">
+                                <Row label="Overall Culture:">
                                     <div className="flex items-center gap-2">
                                         <Chevron direction="left"
                                                  onClick={() => setBackgroundId((i) => cycle(Background.length, i, -1))}/>
@@ -258,9 +302,9 @@ export default function CharacterCreatorPage() {
                                     <button
                                         type="button"
                                         onClick={handleStartJourney}
-                                        disabled={!name.trim()}
+                                        disabled={!isValidCharacter()}
                                         className="min-w-40 px-6 py-3 rounded-xl text-lg bg-gray-400 text-gray-900 shadow-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
+                                        >
                                         Start Journey
                                     </button>
                                     <button

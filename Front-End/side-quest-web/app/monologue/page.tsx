@@ -1,88 +1,105 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-function fakeAIGenerate(name?: string) {
-    const intros = [
-        "A whisper of destiny calls",
-        "The wind carries a promise",
-        "From the tavern's shadow a voice says",
-        "An old map burned at the edges reveals",
-    ];
-
-    const quests = [
-        "retrieve the lost amulet of Verdin from the Hollow Cave.",
-        "escort the caravan through the night-blighted pass.",
-        "bring peace between the riverfolk and the mountain clans.",
-        "uncover the secret behind the falling stars.",
-    ];
-
-    const hooks = [
-        "You will be tested, but glory waits for the brave.",
-        "The path will ask much, and give more in return.",
-        "Trust the stranger with a crooked grin; they know the way.",
-        "This choice decides more than a single life.",
-    ];
-
-    const intro = intros[Math.floor(Math.random() * intros.length)];
-    const quest = quests[Math.floor(Math.random() * quests.length)];
-    const hook = hooks[Math.floor(Math.random() * hooks.length)];
-
-    const who = name ? `${name},` : "Traveler,";
-
-    // return a short monologue sentence
-    return `${intro}: ${who} ${quest} ${hook}`;
-}
+import { useSearchParams } from "next/navigation";
 
 export default function MonologuePage() {
-    const [monologue, setMonologue] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [acknowledged, setAcknowledged] = useState(false);
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get("sessionId");
 
-    useEffect(() => {
-        setLoading(true);
-        const t = setTimeout(() => {
-            setMonologue(fakeAIGenerate());
-            setLoading(false);
-        }, 700);
-        return () => clearTimeout(t);
-    }, []);
+  const [monologue, setMonologue] = useState<string | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
+  const [background, setBackground] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [acknowledged, setAcknowledged] = useState(false);
 
-    return (
-        <main className="min-h-screen bg-gray-100 flex flex-col items-center py-12 px-6">
-            {/* Top-centered rounded dialog pill */}
-            <div className="w-full max-w-4xl">
-                <div className="mx-auto">
-                    <div className="rounded-full bg-gray-400 text-gray-900 shadow-lg py-10 px-8 text-center min-h-[6rem] flex items-center justify-center">
-                        {loading ? (
-                            <span className="italic">Generating monologue…</span>
-                        ) : (
-                            <p className="max-w-3xl">{monologue}</p>
-                        )}
-                    </div>
-                </div>
-            </div>
+  useEffect(() => {
+    const fetchMonologue = async () => {
+      if (!sessionId) {
+        console.error("No sessionId found in URL.");
+        setMonologue("Session not found. Please restart your journey.");
+        setLoading(false);
+        return;
+      }
 
-            {/* Spacer to push the button lower — matches the layout in the image */}
-            <div className="flex-1" />
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/quest/monologue/${encodeURIComponent(sessionId)}`
+        );
 
-            {/* Centered rounded button near bottom */}
-            <div className="w-full max-w-xl">
-                <div className="mx-auto flex justify-center">
-                    <button
-                        type="button"
-                        onClick={() => setAcknowledged(true)}
-                        className="w-1/2 md:w-1/3 bg-gray-400 text-gray-900 rounded-2xl py-4 shadow-lg hover:bg-gray-300"
-                    >
-                        {acknowledged ? "Quest Understood!" : "Quest Understood"}
-                    </button>
-                </div>
-            </div>
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-            {/* Optional acknowledgement text under the button */}
-            {acknowledged && (
-                <div className="mt-6 text-center text-gray-700">You acknowledged the quest — good luck!</div>
-            )}
-        </main>
-    );
+        const data = await response.json();
+
+        if (Array.isArray(data) && data.length >= 3) {
+          const [text, userIdStr, overallCulture] = data;
+
+          setMonologue(text);
+          setUserId(Number(userIdStr));
+          setBackground(overallCulture);
+
+          // ** save for next slides **
+          localStorage.setItem("userId", userIdStr);
+          localStorage.setItem("background", overallCulture);
+
+          console.log("Monologue:", text);
+          console.log("User ID:", userIdStr);
+          console.log("Background:", overallCulture);
+        } else {
+          console.error("Unexpected response format:", data);
+          setMonologue("Unexpected data format from server.");
+        }
+      } catch (err) {
+        console.error("Error fetching monologue:", err);
+        setMonologue("Failed to load monologue. Please check your connection.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMonologue();
+  }, [sessionId]);
+
+  // dynamically set background image path
+  const backgroundImagePath = background ? `/background/${background}Background.png` : "";
+
+  return (
+    <main
+      className="min-h-screen flex flex-col items-center py-12 px-6"
+      style={{
+        backgroundImage: backgroundImagePath ? `url(${backgroundImagePath})` : undefined,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="w-full max-w-4xl">
+        <div className="mx-auto">
+          <div className="rounded-full bg-gray-400 text-gray-900 shadow-lg py-10 px-8 text-center min-h-[6rem] flex items-center justify-center">
+            {loading ? <span className="italic">Generating monologue…</span> : <p className="max-w-3xl">{monologue}</p>}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-1" />
+
+      <div className="w-full max-w-xl">
+        <div className="mx-auto flex justify-center">
+          <button
+            type="button"
+            onClick={() => setAcknowledged(true)}
+            className="w-1/2 md:w-1/3 bg-gray-400 text-gray-900 rounded-2xl py-4 shadow-lg hover:bg-gray-300"
+          >
+            {acknowledged ? "Quest Understood!" : "Quest Understood"}
+          </button>
+        </div>
+      </div>
+
+      {acknowledged && (
+        <div className="mt-6 text-center text-gray-700">
+          You acknowledged the quest — good luck, {background} adventurer!
+        </div>
+      )}
+    </main>
+  );
 }
