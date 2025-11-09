@@ -121,7 +121,8 @@ public class QuestService {
                       {
                       "userInfo": {
                         "userId": {user_id},
-                        "userName": {userName}
+                        "userName": {userName},
+                        "overallCulture": {overallCulture}
                       },
                       "monologue": {
                         "text": "A short narrative introduction (4–6 sentences) explaining the situation or world the player is in. Include context about their character, outfit, and culture in a fun and immersive way."
@@ -280,6 +281,7 @@ public class QuestService {
             if (userInfo != null) {
                 quest.setUser_id(userInfo.optLong("userId"));
                 quest.setUser_name(userInfo.optString("userName"));
+                quest.setOverall_culture(userInfo.getString("overallCulture"));
             }
 
             // parse monologue
@@ -341,6 +343,7 @@ public class QuestService {
         Quest quest = sessionService.getSession(sessionId);
         data.add(quest.getMonologue());
         data.add(quest.getUser_id().toString());
+        data.add(quest.getOverall_culture());
         return data;
     }
 

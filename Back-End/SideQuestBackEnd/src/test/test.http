@@ -59,7 +59,7 @@ Content-Type: application/json
 
 
 ### GET request for getting monologue
-GET localhost:8080/api/quest/monologue/8120a9c7-c701-426a-9397-3e721bebe0e1
+GET localhost:8080/api/quest/monologue/0cc02023-adb3-4e59-aa11-396edc0e7f41
 Content-Type: application/json
 
 > {%
