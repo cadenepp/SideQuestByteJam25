@@ -1,9 +1,5 @@
 "use client";
 
-// import { useEffect, useState } from "react";
-
-
-
 export default function aboutUs() {
     
     return (
@@ -22,8 +18,14 @@ export default function aboutUs() {
                 <div className="mt-16 text-center">
                     {/* Title*/}
                     <div>
-                        <h1 className="text-2xl font-bold">Our Mission</h1>
-                        <p className="text-gray-700">Information</p>
+                        <h1 className="text-2xl font-bold">Our Story</h1>
+                        <p className="pl-30 pr-30 mt-2">Side Quest is an interactive game developed by the Sons of Anton team for the 2025 Indian Hills Byte Jam competition. 
+                            It uses artifical intelligence to create unique, evolving stories that guide players to make the right choices. Step into a world of diverse 
+                            cultures and endless adventures! Create your own custom character and mix and match outfit pieces — from hats and shirts to pants and 
+                            shoes — inspired by four unique cultures.</p>
+                        
+                        <p className="mt-2 pl-30 pr-30">No two adventures are ever the same thanks to our AI-generated storylines, each filled with new choices and outcomes. Play fast, think smart, 
+                            and climb the leaderboard to prove you're the ultimate explorer!</p>
                     </div>
 
                     <div className="mt-10">
@@ -39,9 +41,9 @@ export default function aboutUs() {
                                 className="w-24 sm:w-32 md:w-48 object-cover rounded-xl"
                             />
                             <div className="text-center md:text-left max-w-md">
-                                <h1 className="text-xl font-semibold">Caden Epp (Title, ex: Software Developer)</h1>
+                                <h1 className="text-xl font-semibold">Caden Epp (Title)</h1>
                                 <p className="text-red-900 font-medium">(Role)</p>
-                                <p className="mt-2 text-gray-700">Information</p>
+                                <p className="mt-2 text-gray-700">Lead developer for the back-end development. Main AI director/implementor. Team product manager.</p>
                             </div>
                         </div>
                     </div>
@@ -50,9 +52,9 @@ export default function aboutUs() {
                     <div className="flex justify-center mt-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 items-center justify-items-center gap-8 max-w-3xl">
                             <div className="text-center md:text-right md:justify-self-end max-w-md">
-                                <h1 className="text-xl font-semibold">Arun Graeff (Title, ex: Software Developer)</h1>
+                                <h1 className="text-xl font-semibold">Arun Graeff (Title)</h1>
                                 <p className="text-red-900 font-medium">(Role)</p>
-                                <p className="mt-2 text-gray-700">Information</p>
+                                <p className="mt-2 text-gray-700">Assisted in back-end development. Designed poster board outline.</p>
                             </div>
                             <img
                                 src="/photos/Arun.png"
@@ -66,14 +68,14 @@ export default function aboutUs() {
                     <div className="flex justify-center mt-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 items-center justify-items-center gap-8 max-w-3xl">
                             <img
-                                src="/photos/Arun.png"
+                                src="/photos/Keith.png"
                                 alt="Arun"
                                 className="w-24 sm:w-32 md:w-48 object-cover rounded-xl"
                             />
                             <div className="text-center md:text-left max-w-md">
                                 <h1 className="text-xl font-semibold">Keith Roberts, Software Developer</h1>
-                                <p className="text-red-900 font-medium">Front-end Designer</p>
-                                <p className="mt-2 text-gray-700">Information</p>
+                                <p className="text-red-900 font-medium">Front-end Developer</p>
+                                <p className="mt-2 text-gray-700">Lead developer for front-end development.</p>
                             </div>
                         </div>
                     </div>
@@ -82,9 +84,9 @@ export default function aboutUs() {
                     <div className="flex justify-center mt-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 items-center justify-items-center gap-8 max-w-3xl">
                             <div className="text-center md:text-right md:justify-self-end max-w-md">
-                                <h1 className="text-xl font-semibold">Cody Carroll (Title, ex: Software Developer)</h1>
+                                <h1 className="text-xl font-semibold">Cody Carroll (Title)</h1>
                                 <p className="text-red-900 font-medium">(Role)</p>
-                                <p className="mt-2 text-gray-700">Information</p>
+                                <p className="mt-2 text-gray-700">Assisted in character and background design. Assisted in webpage design by vibe coding.</p>
                             </div>
                             <img
                                 src="/photos/Cody.png"
@@ -103,9 +105,9 @@ export default function aboutUs() {
                                 className="w-24 sm:w-32 md:w-48 object-cover rounded-xl"
                             />
                             <div className="text-center md:text-left max-w-md">
-                                <h1 className="text-xl font-semibold">Lincoln Gilbert (Title, ex: Software Developer)</h1>
+                                <h1 className="text-xl font-semibold">Lincoln Gilbert (Title)</h1>
                                 <p className="text-red-900 font-medium">(Role)</p>
-                                <p className="mt-2 text-gray-700">Information</p>
+                                <p className="mt-2 text-gray-700">Lead Character and background designer. Assisted in webpage development by vibe coding.</p>
                             </div>
                         </div>
                     </div>
