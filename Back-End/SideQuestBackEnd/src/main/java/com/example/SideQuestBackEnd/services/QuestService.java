@@ -207,9 +207,9 @@ public class QuestService {
         String json = """
         {
           "model": "accounts/cadenepp24/deployedModels/llama-sidequest-ag-fr-ols8t7iw",
-          "max_tokens": 4000,
-          "top_p": 1,
-          "top_k": 40,
+          "max_tokens": 1200,
+          "top_p": 0.9,
+          "top_k": 20,
           "presence_penalty": 0,
           "frequency_penalty": 0,
           "temperature": 0.7,

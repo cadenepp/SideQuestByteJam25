@@ -20,4 +20,12 @@ public class SuccessfulUser {
     @Column(name = "time_in_seconds")
     public int timeInSeconds;
 
+    public SuccessfulUser(Long userId, int timeInSeconds) {
+        this.userId = userId;
+        this.timeInSeconds = timeInSeconds;
+    }
+
+    public SuccessfulUser() {
+
+    }
 }

@@ -5,7 +5,7 @@ POST localhost:8080/api/User
 Content-Type: application/json
 
 {
-    "name": "Killey",
+    "name": "Lillyyy",
     "overallCulture": "Mexican",
     "hat": "AmericanHat",
     "shirt": "JapaneseShirt",
@@ -70,7 +70,7 @@ Content-Type: application/json
 
 
 ### GET request for getting slide 1
-GET localhost:8080/api/quest/slide1/8120a9c7-c701-426a-9397-3e721bebe0e1
+GET localhost:8080/api/quest/slide1/5cca6053-ec8f-4512-ab3f-10f836196589
 Content-Type: application/json
 
 > {%
