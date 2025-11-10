@@ -1,5 +1,114 @@
-### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=IntelliJ IDEA
 
-###
+
+### POST request for User
+POST localhost:8080/api/User
+Content-Type: application/json
+
+{
+    "name": "Lillyyy",
+    "overallCulture": "Mexican",
+    "hat": "AmericanHat",
+    "shirt": "JapaneseShirt",
+    "pants": "GermanPants",
+    "shoes": "MexicanShoes"
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### GET request for finding User by Id
+GET localhost:8080/api/User/1
+Content-Type: application/json
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### POST request for Successful User
+POST localhost:8080/api/SuccessfulUser
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "timeInSeconds": 120
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### GET request for finding all Successfull Users
+GET localhost:8080/api/SuccessfulUser
+Content-Type: application/json
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### GET request for getting monologue
+GET localhost:8080/api/quest/monologue/0cc02023-adb3-4e59-aa11-396edc0e7f41
+Content-Type: application/json
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### GET request for getting slide 1
+GET localhost:8080/api/quest/slide1/5cca6053-ec8f-4512-ab3f-10f836196589
+Content-Type: application/json
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### GET request for getting slide 2
+GET localhost:8080/api/quest/slide2/8120a9c7-c701-426a-9397-3e721bebe0e1
+Content-Type: application/json
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### GET request for getting slide 3
+GET localhost:8080/api/quest/slide3/8120a9c7-c701-426a-9397-3e721bebe0e1
+Content-Type: application/json
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### GET request for getting slide 4
+GET localhost:8080/api/quest/slide4/8120a9c7-c701-426a-9397-3e721bebe0e1
+Content-Type: application/json
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
