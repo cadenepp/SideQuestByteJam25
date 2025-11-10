@@ -41,8 +41,8 @@ export default function aboutUs() {
                                 className="w-24 sm:w-32 md:w-48 object-cover rounded-xl"
                             />
                             <div className="text-center md:text-left max-w-md">
-                                <h1 className="text-xl font-semibold">Caden Epp (Title)</h1>
-                                <p className="text-red-900 font-medium">(Role)</p>
+                                <h1 className="text-xl font-semibold">Caden Epp, Team Lead</h1>
+                                <p className="text-red-900 font-medium">Full Stack - Software Developer</p>
                                 <p className="mt-2 text-gray-700">Lead developer for the back-end development. Main AI director/implementor. Team product manager.</p>
                             </div>
                         </div>
@@ -52,8 +52,8 @@ export default function aboutUs() {
                     <div className="flex justify-center mt-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 items-center justify-items-center gap-8 max-w-3xl">
                             <div className="text-center md:text-right md:justify-self-end max-w-md">
-                                <h1 className="text-xl font-semibold">Arun Graeff (Title)</h1>
-                                <p className="text-red-900 font-medium">(Role)</p>
+                                <h1 className="text-xl font-semibold">Arun Graeff, Main Assistant</h1>
+                                <p className="text-red-900 font-medium">Software Developer</p>
                                 <p className="mt-2 text-gray-700">Assisted in back-end development. Designed poster board outline.</p>
                             </div>
                             <img
@@ -84,8 +84,8 @@ export default function aboutUs() {
                     <div className="flex justify-center mt-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 items-center justify-items-center gap-8 max-w-3xl">
                             <div className="text-center md:text-right md:justify-self-end max-w-md">
-                                <h1 className="text-xl font-semibold">Cody Carroll (Title)</h1>
-                                <p className="text-red-900 font-medium">(Role)</p>
+                                <h1 className="text-xl font-semibold">Cody Carroll, Secondary Assistant</h1>
+                                <p className="text-red-900 font-medium">Software Developer</p>
                                 <p className="mt-2 text-gray-700">Assisted in character and background design. Assisted in webpage design by vibe coding.</p>
                             </div>
                             <img
@@ -105,8 +105,8 @@ export default function aboutUs() {
                                 className="w-24 sm:w-32 md:w-48 object-cover rounded-xl"
                             />
                             <div className="text-center md:text-left max-w-md">
-                                <h1 className="text-xl font-semibold">Lincoln Gilbert (Title)</h1>
-                                <p className="text-red-900 font-medium">(Role)</p>
+                                <h1 className="text-xl font-semibold">Lincoln Gilbert, Lead Designer</h1>
+                                <p className="text-red-900 font-medium">UI/UX Designer</p>
                                 <p className="mt-2 text-gray-700">Lead Character and background designer. Assisted in webpage development by vibe coding.</p>
                             </div>
                         </div>

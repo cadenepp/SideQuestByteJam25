@@ -31,7 +31,7 @@ export default function Home() {
           </button>
 
           <button
-            onClick={() => router.push("/about")}
+            onClick={() => router.push("/about-us")}
             className="w-full rounded-md bg-[#d9b63a] px-6 py-3 text-lg font-bold uppercase tracking-wide text-black shadow-[0_4px_0_#7b6519] hover:translate-y-[2px] hover:shadow-[0_2px_0_#7b6519] active:translate-y-[3px] active:shadow-none transition-all duration-100"
           >
             About
